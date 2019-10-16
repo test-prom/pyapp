@@ -6,6 +6,7 @@ trigger:
   branches:
     include:
       - master
+      - development
   paths:
     #include:
     exclude:
@@ -20,7 +21,7 @@ resources:
 - repo: self
 
 variables:
-  tag: 'v-0.1.0'
+  tag: '$(VERSION_TAG)'
 
 stages:
 - stage: Build
@@ -32,6 +33,8 @@ stages:
     pool:
       vmImage: 'ubuntu-latest'
     steps:
+    - script: VERSION_TAG=`git rev-parse --short HEAD` && echo "##vso[task.setvariable variable=VERSION_TAG]$VERSION_TAG"
+      displayName: Set the Git Short SHA as an environment variable
     - task: Docker@2
       displayName: Build image
       inputs:
@@ -49,4 +52,3 @@ stages:
         command: 'push'
         tags: |
           $(tag)
-
