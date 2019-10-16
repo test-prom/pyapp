@@ -21,7 +21,7 @@ trigger:
  #- repo: self
 
 variables:
-  tag: $(BRANCH_TAG)-$(VERSION_TAG)
+  tag: $(Build.SourceBranch.Replace('refs/*/',''))-$(VERSION_TAG)
 
 stages:
 - stage: Build
@@ -43,8 +43,8 @@ stages:
     - script: VERSION_TAG=`git rev-parse --short HEAD` && echo "##vso[task.setvariable variable=VERSION_TAG]$VERSION_TAG"
       displayName: Set the Git Short SHA as an environment variablie
 
-    - script: BRANCH_TAG=`git rev-parse --abbrev-ref HEAD` && echo "##vso[task.setvariable variable=BRANCH_TAG]$BRANCH_TAG"
-      displayName: Set the Git Branch name as an environment variable
+      #    - script: BRANCH_TAG=`git rev-parse --abbrev-ref HEAD` && echo "##vso[task.setvariable variable=BRANCH_TAG]$BRANCH_TAG"
+      #      displayName: Set the Git Branch name as an environment variable
 
     - task: Docker@2
       displayName: Build image
