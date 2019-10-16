@@ -7,9 +7,9 @@ trigger:
     include:
     - master
     - development
-  paths:
+#  paths:
     #include:
-    exclude:
+#    exclude:
    #- azure-pipelines.yml
   #tags:
     #include:
