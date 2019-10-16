@@ -5,8 +5,8 @@
 trigger:
   branches:
     include:
-      - master
-      - development
+    - master
+    - development
   paths:
     #include:
     exclude:
