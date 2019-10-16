@@ -5,8 +5,8 @@
 trigger:
   branches:
     include:
-      - master
-      - development
+    - master
+    - development
   paths:
     #include:
     exclude:
@@ -21,7 +21,7 @@ resources:
 - repo: self
 
 variables:
-  tag: '$(VERSION_TAG)-$(Build.BuildNumber)'
+  tag: '$(VERSION_TAG)'
 
 stages:
 - stage: Build
@@ -52,3 +52,4 @@ stages:
         command: 'push'
         tags: |
           $(tag)
+
