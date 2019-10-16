@@ -21,7 +21,7 @@ resources:
 - repo: self
 
 variables:
-  tag: '$(VERSION_TAG)'
+  tag: '$(VERSION_TAG)-$(Build.BuildNumber)'
 
 stages:
 - stage: Build
