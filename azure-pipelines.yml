@@ -10,6 +10,7 @@ trigger:
   paths:
     #include:
     exclude:
+    - k8s/*
     - azure-pipelines.yml
     - README.md
   #tags:
