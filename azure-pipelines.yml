@@ -3,13 +3,24 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/docker
 
 trigger:
-- master
+  branches:
+    include:
+      - master
+  paths:
+    #include:
+    exclude:
+    - azure-pipelines.yml
+  #tags:
+    #include:
+    #- v2.*
+    #exclude:
+    #- v2.0
 
 resources:
 - repo: self
 
 variables:
-  tag: '$(GitVersion.ShortSha)'
+  tag: ' $(Build.SourceVersion)'
 
 stages:
 - stage: Build
