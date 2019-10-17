@@ -1,0 +1,23 @@
+service:
+  name: pyapp-svc
+  port: 8080
+
+productionDeployment:
+  replicaCount: 2
+  weight: 100
+  image:
+    repository: diquzart/pyapp
+    tag: latest
+    pullPolicy: IfNotPresent
+
+
+canaryDeployment:
+  replicaCount: 0
+  weight: 0
+  image:
+    repository: diquzart/pyapp
+    tag: latest
+    pullPolicy: IfNotPresent
+
+
+

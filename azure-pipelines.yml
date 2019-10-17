@@ -1,0 +1,69 @@
+# Docker
+# Build a Docker image 
+# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
+
+trigger:
+  branches:
+    include:
+    - master
+    - development
+  paths:
+    #include:
+    exclude:
+    - k8s/*
+    - chart/* 
+    - azure-pipelines.yml
+    - README.md
+  #tags:
+    #include:
+    #- v2.*
+    #exclude:
+    #- v2.0
+
+
+variables:
+  tag: $(Build.SourceBranchName)-$(VERSION_TAG)
+
+stages:
+- stage: Build
+  displayName: Build image
+
+  jobs:  
+  - job: Build
+    displayName: Build
+    pool:
+      vmImage: 'ubuntu-latest'
+
+
+    steps:
+    - checkout: self
+      clean: true
+      displayName: Cleaning local repo
+
+    - script: VERSION_TAG=`git rev-parse --short HEAD` && echo "##vso[task.setvariable variable=VERSION_TAG]$VERSION_TAG"
+      displayName: Set the Git Short SHA as an environment variablie
+
+    - task: Docker@2
+      displayName: Build image
+      inputs:
+        containerRegistry: 'Docker Hub'
+        repository: 'diquzart/pyapp'
+        command: 'build'
+        Dockerfile: '**/Dockerfile'
+        tags: |
+          $(tag)
+
+    - task: Docker@2
+      displayName: Push image to Docker Hub
+      inputs:
+        containerRegistry: 'Docker Hub'
+        repository: 'diquzart/pyapp'
+        command: 'push'
+        tags: |
+          $(tag)
+
+    - task: PublishPipelineArtifact@1
+      displayName: Publish artifacts
+      inputs:
+        targetPath: '$(Pipeline.Workspace)'
+        artifact: 'drop'

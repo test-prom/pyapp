@@ -1,0 +1,106 @@
+---
+# Source: pyapp/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: pyapp-svc
+  labels:
+    app: pyapp
+    release: release-name
+spec:
+  type: 
+  ports:
+    - port: 8080
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app: pyapp
+    release: release-name
+
+---
+# Source: pyapp/templates/deployment.yaml
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: release-name-pyapp
+  labels:
+    app: pyapp
+    release: release-name
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: pyapp
+      release: release-name
+  template:
+    metadata:
+      labels:
+        app: pyapp
+        release: release-name
+    spec:
+      containers:
+        - name: pyapp
+          image: "diquzart/pyapp:master-cc35a80"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+
+---
+# Source: pyapp/templates/istioDestinationRule.yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: pyapp-destination-rule
+  labels:
+    release: release-name
+spec:
+  host: pyapp-svc.default.svc.cluster.local
+  trafficPolicy:
+    tls:
+      mode: ISTIO_MUTUAL
+  subsets:
+  - name: production
+    labels:
+      app: pyapp
+
+---
+# Source: pyapp/templates/istioGateway.yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: pyapp
+  labels:
+    release: release-name
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"
+---
+# Source: pyapp/templates/istioVirtualService.yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: pyapp-virtual-service
+  labels:
+    release: release-name
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - pyapp
+  http:
+  - route:
+    - destination:
+        host: pyapp-svc.default.svc.cluster.local
+        subset: production
+        port:
+          number: 8080
