@@ -1,0 +1,26 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: pyapp-virtual-service
+  labels:
+    chart: {{ template "pyapp.chart" . }}
+    release: {{ .Release.Name }}
+spec:
+  hosts:
+  - {{ .Values.service.name }}.{{ .Release.Namespace }}.svc.cluster.local
+  gateways:
+  - pyapp
+  http:
+  - route:
+    - destination:
+        host: {{ .Values.service.name }}.{{ .Release.Namespace }}.svc.cluster.local
+        subset: production
+        port:
+          number: {{ .Values.service.port }}
+      weight: {{ .Values.productionDeployment.weight }}
+    - destination:
+        host: {{ .Values.service.name }}.{{ .Release.Namespace }}.svc.cluster.local
+        subset: canary
+        port:
+          number: {{ .Values.service.port }}
+      weight: {{ .Values.canaryDeployment.weight }}
