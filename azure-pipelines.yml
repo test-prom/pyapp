@@ -68,7 +68,7 @@ stages:
       inputs:
         targetPath: '$(Pipeline.Workspace)'
         artifact: 'drop'
-stages:
+
 - stage: Deploy
   displayName: Deploy
 
