@@ -1,6 +1,6 @@
 from flask import Flask
 
-version = b"0.1.2"
+version = b"0.1.3"
 app = Flask(__name__)
 
 @app.route("/")
