@@ -11,6 +11,7 @@ trigger:
     #include:
     exclude:
     - k8s/*
+    - chart/* 
     - azure-pipelines.yml
     - README.md
   #tags:
