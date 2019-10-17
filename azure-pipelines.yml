@@ -62,10 +62,8 @@ stages:
         tags: |
           $(tag)
 
-    - task: PublishBuildArtifacts@1
+    - task: PublishPipelineArtifact@1
       displayName: Publish artifacts
       inputs:
-          PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-          ArtifactName: 'drop'
-          publishLocation: 'Container'
-
+        targetPath: '$(Pipeline.Workspace)'
+        artifact: 'drop'
