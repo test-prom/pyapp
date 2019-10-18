@@ -4,7 +4,7 @@ service:
 
 productionDeployment:
   replicaCount: 2
-  weight: 100
+  weight: 90
   image:
     repository: diquzart/pyapp
     tag: latest
