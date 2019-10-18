@@ -12,8 +12,8 @@ productionDeployment:
 
 
 canaryDeployment:
-  replicaCount: 0
-  weight: 0
+  replicaCount: 1
+  weight: 10
   image:
     repository: diquzart/pyapp
     tag: latest
