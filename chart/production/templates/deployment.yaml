@@ -1,0 +1,42 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "pyapp.fullname" . }}
+  labels:
+    app: {{ template "pyapp.name" . }}
+    canary: "false"
+    chart: {{ template "pyapp.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  annotations:
+    sidecar.istio.io/rewriteAppHTTPProbers: "true"
+spec:
+  replicas: {{ .Values.productionDeployment.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "pyapp.name" . }}
+      canary: "false"
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "pyapp.name" . }}
+        canary: "false"
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.productionDeployment.image.repository }}:{{ .Values.productionDeployment.image.tag }}"
+          imagePullPolicy: {{ .Values.productionDeployment.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+##          livenessProbe:
+##            httpGet:
+##              path: /
+#              port: {{ .Values.service.port }}
+#          readinessProbe:
+#            httpGet:
+#              path: /
+#              port: {{ .Values.service.port }}
