@@ -8,6 +8,8 @@ metadata:
     chart: {{ template "pyapp.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+  annotations:
+    sidecar.istio.io/rewriteAppHTTPProbers: "true"
 spec:
   replicas: {{ .Values.productionDeployment.replicaCount }}
   selector:
