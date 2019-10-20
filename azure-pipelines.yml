@@ -20,6 +20,8 @@ trigger:
     #exclude:
     #- v2.0
 
+# Don't run against PRs
+pr: none
 
 variables:
   tag: $(Build.SourceBranchName)-$(VERSION_TAG)
